@@ -12,6 +12,7 @@ module.exports.pullReplication = function(test, common) {
     
         ws.on('close', function() {
           dat2.pull(function(err) {
+            console.log('pull done')
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               done()
@@ -102,6 +103,42 @@ module.exports.pullReplicationLive = function(test, common) {
   })
 }
 
+module.exports.pullReplicationLiveMultiple = function(test, common) {
+  test('live pull replication w/ multiple puts', function(t) {
+    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+      common.getDat(t, function(dat, cleanup) {
+        var pull = dat2.pull({ live: true })
+        dat.whoami = 'dat1'
+        dat2.whoami = 'dat2'
+        dat.put({foo: 'bar'}, function(err) {
+          if (err) throw err
+          dat.put({bar: 'baz'}, function(err) {
+            if (err) throw err
+            setTimeout(function() {
+              dat2.createReadStream().pipe(concat(function(data) {
+                console.log('DATA', data)
+                t.equal(data.length, 2)
+                t.equal(data[0].foo, 'bar')
+                t.equal(data[0].bar, 'baz')
+                done()
+              }))
+            }, 250)
+          })
+        })
+        
+        function done() {
+          pull.stream.end()
+          dat2.destroy(function(err) {
+            if (err) throw err
+            cleanup()
+          })
+        }
+      })
+    })
+  })
+}
+
+
 module.exports.pushReplication = function(test, common) {
   test('push replication', function(t) {
     var expected = ["pizza", "walrus"]
@@ -174,4 +211,5 @@ module.exports.all = function (test, common) {
   module.exports.pullReplicationLive(test, common)
   module.exports.pushReplication(test, common)
   module.exports.remoteInit(test, common)
+  module.exports.pullReplicationLiveMultiple(test, common)
 }

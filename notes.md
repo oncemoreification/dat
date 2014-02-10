@@ -89,3 +89,11 @@ so for the above example the buffer would be something like this:
 ```
 4taco5pizza6walrus
 ```
+
+#### schema versioning
+
+each row stores an integer that corresponds to the schema that should be used to read the values in the row. dat will use an autoincrementing integer to assign schema versions. any operation that introduces new columns will trigger a schema version change
+
+##### things I haven't benchmarked yet
+
+- is the schema versioning approach (e.g. storing only values + a schema version) faster than storing e.g. protobufs?
