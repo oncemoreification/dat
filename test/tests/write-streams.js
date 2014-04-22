@@ -283,6 +283,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
           var cat = dat.createReadStream()
   
           cat.pipe(concat(function(data) {
+
             t.equal(data.length, 1)
             t.equal(data[0].foo, "bar")
             done()
@@ -416,11 +417,13 @@ module.exports.writeStreamConflicts = function(test, common) {
         t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
         writeAndVerify(rev1, function(err2, stored2) {
           t.ok(err2, 'should have errored')
+          debugger
           t.equals(stored1.length, 1, '1 row in db')
           t.equals(stored1[0].name, 'bob', 'bob is in db')
           t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
           writeAndVerify(stored1[0], function(err3, stored3) {
             t.notOk(err3, 'no err')
+            debugger
             t.equals(stored3.length, 1, '1 row in db')
             t.equals(stored3[0].name, 'bob', 'bob is in db')
             t.equals(stored3[0]._rev[0], '2', 'bob is at rev 2')
@@ -552,6 +555,33 @@ module.exports.keepTotalRowCount = function(test, common) {
 
       ws.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
       ws.end()
+
+    })
+  })
+
+  test('keeps row count for streams after updates', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws1 = dat.createWriteStream({ json: true })
+
+      ws1.on('end', function() {
+        var ws2 = dat.createWriteStream({ json: true })
+
+        ws2.on('error', function(e) {
+          var cat = dat.createReadStream()
+
+          cat.pipe(concat(function(data) {
+            t.equal(data.length, 1)
+            t.equal(dat.getRowCount(), 1)
+            done()
+          }))
+        })
+
+        ws2.write(bops.from(JSON.stringify({'_id': 'foo'})))
+        ws2.end()
+      })
+
+      ws1.write(bops.from(JSON.stringify({'_id': 'foo'})))
+      ws1.end()
 
     })
   })
