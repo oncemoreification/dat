@@ -283,7 +283,6 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
           var cat = dat.createReadStream()
   
           cat.pipe(concat(function(data) {
-
             t.equal(data.length, 1)
             t.equal(data[0].foo, "bar")
             done()
