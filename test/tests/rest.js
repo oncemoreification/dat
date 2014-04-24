@@ -45,6 +45,7 @@ module.exports.restBulkCsv = function(test, common) {
       post.pipe(concat(function(resp) {
         var ldj = resp.toString()
         ldj = ldj.slice(0, ldj.length - 1)
+        debugger;
         var obj = ldj.split('\n').map(function(o) { return JSON.parse(o).row })[0]
         dat.get(obj._id, function(err, json) {
           t.false(err, 'no error')
