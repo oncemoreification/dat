@@ -417,13 +417,11 @@ module.exports.writeStreamConflicts = function(test, common) {
         t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
         writeAndVerify(rev1, function(err2, stored2) {
           t.ok(err2, 'should have errored')
-          debugger
           t.equals(stored1.length, 1, '1 row in db')
           t.equals(stored1[0].name, 'bob', 'bob is in db')
           t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
           writeAndVerify(stored1[0], function(err3, stored3) {
             t.notOk(err3, 'no err')
-            debugger
             t.equals(stored3.length, 1, '1 row in db')
             t.equals(stored3[0].name, 'bob', 'bob is in db')
             t.equals(stored3[0]._rev[0], '2', 'bob is at rev 2')

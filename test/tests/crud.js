@@ -90,6 +90,7 @@ module.exports.updateJson = function(test, common) {
         dat.put({"_id": "foo"}, function(err, doc2) {
           t.ok(err, 'should err')
           t.notOk(doc2, "should not return data")
+          debugger
           dat.put(doc, function(err, doc3) {
             t.notOk(err, 'no err')
             t.equals(doc3._rev[0], '2', 'should be at rev 2')

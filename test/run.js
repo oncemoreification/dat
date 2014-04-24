@@ -9,13 +9,13 @@ function test(name, testFunction) {
 }
 
 var tests = [
-  // require('./tests/cli'),
-  // require('./tests/init'),
-  // require('./tests/crud'),
-  // require('./tests/read-streams'),
-  require('./tests/write-streams')
-  // require('./tests/replication'),
-  // require('./tests/rest')
+  require('./tests/cli'),
+  require('./tests/init'),
+  require('./tests/crud'),
+  require('./tests/read-streams'),
+  require('./tests/write-streams'),
+  require('./tests/replication'),
+  require('./tests/rest')
 ]
 
 var finish = require('./tests/finish')
