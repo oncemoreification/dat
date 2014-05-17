@@ -74,6 +74,7 @@
     "split": "~0.2.10",
     "stdout-stream": "~1.2.0",
     "stream-combiner": "~0.0.2",
+    "streamcast": "git://github.com/oncemoreification/streamcast.git",
     "sublevel": "~2.3.0",
     "through2": "~0.4.1"
   },
